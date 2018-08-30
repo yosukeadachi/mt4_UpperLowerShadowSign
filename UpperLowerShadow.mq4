@@ -21,7 +21,6 @@ double Lower_Shadow[];
 
 //変数の宣言
 extern int Magnification = 3;
-extern int Minimum_Length = 30;
 
 double Pips = 0;
 
@@ -59,6 +58,7 @@ int OnInit(){
   SetIndexArrow(1,234);
 
   Pips = AdjustPoint(Symbol());
+  printf("Pips:%f",Pips);
 
   return(INIT_SUCCEEDED);
 }
@@ -92,10 +92,6 @@ int OnCalculate(const int rates_total,
   //実体の計算
   for(i = limit - 1; i >= 0; i--) {
     Real_Body[i] = MathAbs(Open[i] - Close[i]);
-
-    if(Real_Body[i] == 0) {
-       Real_Body[i] += Pips; 
-    }
   }
 
   //上ヒゲの計算
@@ -110,21 +106,19 @@ int OnCalculate(const int rates_total,
 
   //矢印の設定
   for(i = limit - 1; i >= 0; i--) {
-    //上矢印の設定
     // printf("%d",i);
     // printf("Real_Body[i] * Magnification:%f",Real_Body[i] * Magnification);
+    //上矢印の設定
     // printf("Lower_Shadow[i]:%f",Lower_Shadow[i]);
-    // printf("Minimum_Length * Pips:%f",Minimum_Length * Pips);
     if(Real_Body[i] * Magnification <= Lower_Shadow[i] &&
-    Minimum_Length * Pips <= Lower_Shadow[i] &&
     Upper_Shadow[i] * Magnification <= Lower_Shadow[i]) {
       //  printf("!!!!^%d^!!!!",i);
        Arrow_Up[i] = Low[i] - Pips;
      }
 
     //下矢印の設定
+    // printf("Upper_Shadow[i]:%f",Upper_Shadow[i]);
     if(Real_Body[i] * Magnification <= Upper_Shadow[i] && 
-    Minimum_Length * Pips <= Upper_Shadow[i] &&
     Lower_Shadow[i] * Magnification <= Upper_Shadow[i]) {
       //  printf("!!!!_%d_!!!!",i);
       Arrow_Down[i] = High[i] + Pips;
